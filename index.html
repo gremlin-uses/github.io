@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Аудит себя</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fafbfc;
+      color: #222;
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2 {
+      font-weight: 600;
+      margin-bottom: 0.5em;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 16px;
+    }
+    .balance-wheel-block {
+      width: 100vw;
+      max-width: 100vw;
+      min-height: 100vh;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 0;
+      margin: 20px 0 0 0; /* Сдвиг вниз на 20px */
+      border-bottom: 2.5px solid #e5e7eb;
+    }
+    .balance-wheel-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #222;
+      text-align: center;
+      letter-spacing: 0.01em;
+      margin-top: 32px;
+    }
+    .balance-wheel-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 32px;
+    }
+    .balance-wheel-svg-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+    .balance-wheel {
+      width: 400px;
+      height: 400px;
+      max-width: 40vw;
+      max-height: 60vh;
+      display: block;
+      background: #fff;
+    }
+    .sliders {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-width: 220px;
+      width: 320px;
+      max-width: 40vw;
+      margin-top: 0;
+    }
+    .slider-block {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      gap: 10px;
+    }
+    .slider-block label {
+      font-size: 1em;
+      flex: 1;
+      text-align: left;
+      min-width: 0;
+      word-break: break-word;
+    }
+    .slider-block input[type="range"] {
+      width: 100px;
+      margin: 0 8px;
+    }
+    .slider-block .slider-value-top {
+      margin-left: 0;
+      margin-right: 0;
+      min-width: 0;
+      color: #222;
+      font-size: 1em;
+    }
+    .slider-block .slider-value-side {
+      margin-left: 8px;
+      color: #222;
+      font-size: 1em;
+    }
+    .blocks-section {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .pdf-page-break + .pdf-page-break {
+      margin-top: 20px;
+    }
+    .audit-block {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 2.5px solid #e5e7eb;
+      padding: 28px 24px 18px 24px;
+      transition: border-color 0.3s;
+      margin-bottom: 0;
+    }
+    .audit-block h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+      margin-bottom: 12px;
+    }
+    .question {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+    .question label {
+      flex: 1;
+      margin-right: 12px;
+    }
+    .question input[type="range"] {
+      width: 120px;
+      margin-right: 8px;
+    }
+    .question .slider-value-top {
+      margin-left: 0;
+      margin-right: 0;
+      min-width: 0;
+      color: #222;
+      font-size: 1em;
+    }
+    .question .slider-value-side {
+      margin-left: 8px;
+      color: #222;
+      font-size: 1em;
+    }
+    .avg-value {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: color 0.3s;
+    }
+    .compare-section {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 2.5px solid #e5e7eb;
+      padding: 24px 16px 18px 16px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1em;
+    }
+    .compare-table th, .compare-table td {
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .compare-table th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+    .compare-table tr {
+      border-bottom: 1.5px solid #e5e7eb;
+    }
+    .compare-table td {
+      vertical-align: middle;
+    }
+    .user-fields {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 56px;
+    }
+    .user-fields label {
+      font-size: 1em;
+      font-weight: 500;
+      margin-bottom: 4px;
+      display: block;
+      color: #555;
+    }
+    .user-fields input[type="text"] {
+      font-size: 1em;
+      padding: 7px 12px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s;
+      width: 180px;
+      box-sizing: border-box;
+    }
+    .user-fields input[type="text"]:focus {
+      border-color: #3b82f6;
+    }
+    @media (max-width: 1200px) {
+      .balance-wheel-content {
+        flex-direction: column;
+        gap: 24px;
+        max-width: 100vw;
+      }
+      .sliders {
+        max-width: 90vw;
+        width: 100%;
+        min-width: 0;
+      }
+      .balance-wheel {
+        width: 320px;
+        height: 320px;
+        max-width: 95vw;
+        max-height: 40vh;
+      }
+    }
+    @media (max-width: 700px) {
+      .balance-wheel-block {
+        min-height: 0;
+        padding-bottom: 16px;
+      }
+      .balance-wheel-content {
+        gap: 10px;
+      }
+      .balance-wheel {
+        width: 180px;
+        height: 180px;
+        max-width: 95vw;
+        max-height: 30vh;
+      }
+      .sliders {
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100vw;
+      }
+      .user-fields input[type="text"] {
+        width: 100px;
+      }
+    }
+    .pdf-btn {
+      padding:10px 22px;
+      font-size:1em;
+      border-radius:8px;
+      background:#3b82f6;
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      transition: background 0.2s;
+    }
+    .pdf-btn:hover {
+      background: #2563eb;
+    }
+    @media print {
+      .page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+      .pdf-page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+      .pdf-hide {
+        display: none !important;
+      }
+    }
+    .page-break {
+      display: block;
+      height: 0;
+    }
+    .pdf-page-break {
+      display: block;
+      page-break-before: always;
+      break-before: page;
+    }
+    /* Фейковый ползунок для PDF */
+    .fake-slider {
+      position: relative;
+      display: inline-block;
+      width: 120px;
+      height: 18px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      margin: 0 8px;
+      vertical-align: middle;
+    }
+    .fake-slider .fake-slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: #3b82f6;
+      border-radius: 8px;
+      z-index: 1;
+    }
+    .fake-slider .fake-slider-knob {
+      position: absolute;
+      top: -3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border: 2px solid #3b82f6;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      z-index: 2;
+    }
+    .fake-slider .fake-slider-value {
+      display: none;
+    }
+    /* Скрываем цифры сверху ползунков при экспорте в PDF */
+    .pdf-export .slider-value-top,
+    .pdf-export .question .slider-value-top {
+      display: none !important;
+    }
+    /* Отступ для блоков аудита только в PDF */
+    .pdf-export .audit-block {
+      margin-top: 60px !important;
+    }
+    /* На экране между блоками после "Аудит себя" 20px */
+    .blocks-section .pdf-page-break + .pdf-page-break {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 1000px; margin: 0 auto; padding: 32px 16px 0 16px;">
+    <div style="background: #fff; border-radius: 16px; border: 2.5px solid #e5e7eb; padding: 20px 18px 18px 18px; margin-bottom: 0; font-size: 1.08em;">
+      <b>Задача:</b> провести диагностику себя в соответствии с колесом баланса, оценить по 10-бальной шкале.<br>
+      <b>Время выполнения:</b> 20-30 минут<br>
+      <b>Рекомендации:</b> При работе опираемся на 1-й принцип ЭУР и собственные внутренние ощущения.
+    </div>
+  </div>
+  <!-- Колесо баланса на отдельной странице -->
+  <div class="pdf-page-break" id="balanceWheelPage">
+    <div class="balance-wheel-block">
+      <div class="balance-wheel-title">Колесо баланса</div>
+      <div class="balance-wheel-content">
+        <div class="balance-wheel-svg-wrap">
+          <svg class="balance-wheel" id="balanceWheel" viewBox="0 0 400 400" width="400" height="400"></svg>
+        </div>
+        <div class="sliders" id="wheelSliders"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div style="background: #fff; border-radius: 16px; border: 2.5px solid #e5e7eb; padding: 20px 18px 18px 18px; margin-bottom: 32px; font-size: 1.08em;">
+      <b>Задача:</b> ответить на вопросы анкеты по 10-бальной шкале. При работе опираемся на 1-й принцип ЭУР и собственные внутренние ощущения. Сравнить с результатами колеса баланса, все ли сошлось?<br>
+      <b>Время выполнения:</b> 30-40 минут
+    </div>
+    <h1>Аудит себя</h1>
+    <div class="blocks-section" id="blocksSection"></div>
+    <!-- Имя и таблица на отдельной странице PDF -->
+    <div class="pdf-page-break" id="comparePage">
+      <form class="user-fields" autocomplete="off" onsubmit="return false;">
+        <div>
+          <label for="userName">Имя</label>
+          <input type="text" id="userName" name="userName" placeholder="Введите имя">
+        </div>
+        <div>
+          <label for="userSurname">Фамилия</label>
+          <input type="text" id="userSurname" name="userSurname" placeholder="Введите фамилию">
+        </div>
+      </form>
+      <div class="compare-section">
+        <h2 style="margin-bottom: 12px;">Сравнительная таблица</h2>
+        <table class="compare-table" id="compareTable">
+          <thead>
+            <tr>
+              <th>Сфера</th>
+              <th>Среднее по вопросам</th>
+              <th>Значение в колесе</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="text-align:right; margin: 32px 0 0 0;">
+      <button id="downloadPdfBtn" class="pdf-btn">
+        Скачать страницу в PDF
+      </button>
+    </div>
+  </div>
+  <script>
+    const blocks = [
+      {
+        name: "Душа (я)",
+        color: "#3b82f6",
+        questions: [
+          "Я хорошо знаком с собой, знаю свои сильные и слабые стороны",
+          "Я люблю себя",
+          "Я знаю свои принципы и ценности",
+          "Я знаю, что дает мне энергию",
+          "Я знаю, что забирает мою энергию",
+          "Я знаю, что приносит мне радость",
+          "Я знаю как могу восстановливать свою энергию",
+          "Я доверяю себе"
+        ]
+      },
+      {
+        name: "Финансы",
+        color: "#f59e42",
+        questions: [
+          "Я удовлетворен своим уровнем дохода",
+          "Я удовлетворен уровнем своего пассивного дохода",
+          "Я удовлетворен уровнем капитализации своего (их) бизнеса (ов)",
+          "Я удовлетворен бытом, местом жительства, окружающим материальным пространством",
+          "Я чувствую финансовую свободу"
+        ]
+      },
+      {
+        name: "Энергоресурсность",
+        color: "#10b981",
+        questions: [
+          "Я доволен уровнем своей энергии",
+          "Я кайфую от прожвания своей жизни",
+          "Я удовлетворен своим настроением последние полгода",
+          "Я удовлетворен уровнем разнообразия, насыщенности и юмора моей жизни",
+          "Я доволен уровнем своей мотивации",
+          "Я оценияваю качество своего отдыха и проведения свободного времени на:",
+          "В моей жизни много ХОЧУ и мало НАДО",
+          "Я успеваю радоваться результатам и быть счастливым в моменте",
+          "У меня есть хоби, которые меня вдохновляют",
+          "Я счастливый человек"
+        ]
+      },
+      {
+        name: "Масштаб личности (реализация себя)",
+        color: "#f43f5e",
+        questions: [
+          "Я реализовал свой истинный потенциал (масштаб)",
+          "Я знаю, что мне надо сделать чтобы выйти на следующий уровень",
+          "Я знаю, что мне мешает выйти на следующий уровень",
+          "У меня есть видение моего будущего, большие мечты, желания, намерения, цели",
+          "Я оцениваю уровень своей самооценки на:",
+          "Я оцениваю свой бизнес / свою карьеру на:",
+          "Я нахожусь на своем месте, ничего не хочу менять"
+        ]
+      },
+      {
+        name: "Окружение",
+        color: "#6366f1",
+        questions: [
+          "Я удовлетворен уровнем своего социального капитала (количество и качество)",
+          "Я удовлетворен своими отношениями с родителями",
+          "Я удовлетворен отношениями с детьми",
+          "Я удовлетворен отношениями с супругом/супругой/половинкой",
+          "Я удовлетворен отношениями с бизнес-партнером",
+          "У меня есть токсичные отношения",
+          "У меня есть классные друзья (количество и качество)",
+          "Я не чувствую себя одиноким"
+        ]
+      },
+      {
+        name: "Здоровье (физическое, ментальное)",
+        color: "#fbbf24",
+        questions: [
+          "Я удовлетворен своим физическим здоровьем",
+          "В моей жизни нет стресса",
+          "Я оцениваю свою физическую форму, тело на:",
+          "Я оцениваю уровень своего ментального здоровья на:",
+          "Я оцениваю правильность своего питания на:",
+          "Я оцениваю соотвествие своего образа жизни здоровому на:",
+          "Я оцениваю уровень своей этики и морали на:",
+          "Я осознаю смысл своей жизни, свою миссию и призвание"
+        ]
+      },
+      {
+        name: "Бизнес (дело)",
+        color: "#0ea5e9",
+        questions: [
+          "У меня есть бизнес от которого я кайфую",
+          "Мой бизнес - место моей самореализации",
+          "У меня есть видение развития моего бизнеса на 3 года",
+          "Меня вдохновляет видение развития моего бизнеса",
+          "У меня есть ясная стратегия бизнеса",
+          "Мои партнёры - моя поддержка в реализации целей бизнеса",
+          "Моя команда - моя поддержка в реализации целей бизнеса",
+          "Я вижу себя активным участником в этом бизнесе ещё долгое время",
+          "Мне нравится моя текущая роль в бизнесе",
+          "Я работаю на перспективном рынке и вижу большой потенциал для развития",
+          "Мой бизнес хорошо капитализируется",
+          "Мой бизнес может эффективно работать без меня"
+        ]
+      }
+    ];
+
+    const wheelSliders = document.getElementById('wheelSliders');
+    const wheelSVG = document.getElementById('balanceWheel');
+    let wheelValues = Array(blocks.length).fill(5);
+    let blockAverages = Array(blocks.length).fill(5);
+
+    function renderWheelSliders() {
+      wheelSliders.innerHTML = '';
+      blocks.forEach((block, i) => {
+        const div = document.createElement('div');
+        div.className = 'slider-block';
+        div.innerHTML = `
+          <label for="wheel-slider-${i}" style="color:${block.color}">${block.name}</label>
+          <input type="range" min="1" max="10" value="${wheelValues[i]}" id="wheel-slider-${i}">
+          <span class="slider-value-side" id="wheel-value-${i}">${wheelValues[i]}</span>
+        `;
+        wheelSliders.appendChild(div);
+
+        div.querySelector('input').addEventListener('input', (e) => {
+          wheelValues[i] = +e.target.value;
+          document.getElementById(`wheel-value-${i}`).textContent = e.target.value;
+          drawWheel();
+          updateCompareTable();
+        });
+      });
+    }
+
+    function polarToCartesian(cx, cy, r, angle) {
+      const rad = (angle - 90) * Math.PI / 180.0;
+      return {
+        x: cx + (r * Math.cos(rad)),
+        y: cy + (r * Math.sin(rad))
+      };
+    }
+
+    function splitLabel(label, maxLen = 18) {
+      if (label.length <= maxLen) return [label];
+      let words = label.split(' ');
+      let lines = [];
+      let line = '';
+      for (let w of words) {
+        if ((line + ' ' + w).trim().length > maxLen) {
+          if (line) lines.push(line.trim());
+          line = w;
+        } else {
+          line += ' ' + w;
+        }
+      }
+      if (line) lines.push(line.trim());
+      return lines;
+    }
+
+    function drawWheel() {
+      const cx = 200, cy = 200, rMax = 140, rMin = 40;
+      const n = blocks.length;
+      let lines = '';
+      let labels = '';
+      let polygons = '';
+      let sectorPolygons = '';
+      let points = [];
+
+      for (let i = 0; i < n; i++) {
+        const angle = 360 / n * i;
+        const value = wheelValues[i];
+        const r = rMin + (rMax - rMin) * (value - 1) / 9;
+        const {x, y} = polarToCartesian(cx, cy, r, angle);
+        points.push({x, y});
+      }
+
+      for (let i = 0; i < n; i++) {
+        const next = (i + 1) % n;
+        const angle1 = 360 / n * i;
+        const angle2 = 360 / n * next;
+        const r1 = rMin + (rMax - rMin) * (wheelValues[i] - 1) / 9;
+        const r2 = rMin + (rMax - rMin) * (wheelValues[next] - 1) / 9;
+        const p1 = polarToCartesian(cx, cy, r1, angle1);
+        const p2 = polarToCartesian(cx, cy, r2, angle2);
+        sectorPolygons += `
+          <polygon points="${cx},${cy} ${p1.x},${p1.y} ${p2.x},${p2.y}" fill="${blocks[i].color}22" stroke="none"/>
+        `;
+      }
+
+      let polygon = points.map(p => `${p.x},${p.y}`).join(' ');
+      polygons += `<polygon points="${polygon}" fill="none" stroke="#222" stroke-width="2"/>`;
+
+      for (let i = 0; i < n; i++) {
+        const angle = 360 / n * i;
+        const {x: x0, y: y0} = polarToCartesian(cx, cy, rMax, angle);
+        lines += `<line x1="${cx}" y1="${cy}" x2="${x0}" y2="${y0}" stroke="#e5e7eb" stroke-width="1"/>`;
+
+        const labelRadius = rMax + 38;
+        const {x: lx, y: ly} = polarToCartesian(cx, cy, labelRadius, angle);
+
+        let labelLines = splitLabel(blocks[i].name, 18);
+        let fontSize = labelLines.length > 2 ? 12 : 15;
+        let yStep = -(labelLines.length - 1) * 9;
+        labelLines.forEach((line, j) => {
+          labels += `<text x="${lx}" y="${ly + yStep + j*18}" text-anchor="middle" alignment-baseline="middle" font-size="${fontSize}" fill="${blocks[i].color}" style="pointer-events:none">${line}</text>`;
+        });
+      }
+
+      wheelSVG.innerHTML = `
+        <circle cx="${cx}" cy="${cy}" r="${rMax}" fill="#fff" stroke="#e5e7eb" stroke-width="2"/>
+        ${lines}
+        ${sectorPolygons}
+        ${polygons}
+        ${labels}
+      `;
+    }
+
+    function renderBlocks() {
+      const blocksSection = document.getElementById('blocksSection');
+      blocksSection.innerHTML = '';
+      blocks.forEach((block, blockIdx) => {
+        // Каждый блок на отдельной странице
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pdf-page-break';
+
+        const div = document.createElement('div');
+        div.className = 'audit-block';
+        div.style.borderColor = block.color + "99";
+        div.innerHTML = `<h2 style="color:${block.color}">${block.name}</h2>`;
+        const questionsDiv = document.createElement('div');
+        let values = Array(block.questions.length).fill(5);
+        block.questions.forEach((q, qIdx) => {
+          const qDiv = document.createElement('div');
+          qDiv.className = 'question';
+          qDiv.innerHTML = `
+            <label for="block-${blockIdx}-q-${qIdx}">${q}</label>
+            <input type="range" min="1" max="10" value="5" id="block-${blockIdx}-q-${qIdx}">
+            <span class="slider-value-side" id="block-${blockIdx}-qval-${qIdx}">5</span>
+          `;
+          questionsDiv.appendChild(qDiv);
+
+          qDiv.querySelector('input').addEventListener('input', (e) => {
+            values[qIdx] = +e.target.value;
+            document.getElementById(`block-${blockIdx}-qval-${qIdx}`).textContent = e.target.value;
+            updateAvg();
+          });
+        });
+        div.appendChild(questionsDiv);
+
+        const avgDiv = document.createElement('div');
+        avgDiv.className = 'avg-value';
+        avgDiv.id = `block-${blockIdx}-avg`;
+        avgDiv.style.color = block.color;
+        div.appendChild(avgDiv);
+
+        function updateAvg() {
+          const avg = values.reduce((a, b) => a + b, 0) / values.length;
+          avgDiv.textContent = `Среднее: ${avg.toFixed(1)}`;
+          avgDiv.style.color = block.color;
+          blockAverages[blockIdx] = avg;
+          drawWheel();
+          updateCompareTable();
+        }
+        updateAvg();
+
+        wrapper.appendChild(div);
+        blocksSection.appendChild(wrapper);
+      });
+    }
+
+    function renderCompareTable() {
+      const tbody = document.getElementById('compareTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      blocks.forEach((block, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="color:${block.color};font-weight:600;">${block.name}</td>
+          <td style="color:${block.color};">${blockAverages[i] ? blockAverages[i].toFixed(1) : '-'}</td>
+          <td style="color:${block.color};">${wheelValues[i] ? wheelValues[i].toFixed(1) : '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function updateCompareTable() {
+      renderCompareTable();
+    }
+
+    renderWheelSliders();
+    drawWheel();
+    renderBlocks();
+    renderCompareTable();
+
+    // --- Фейковые ползунки для PDF ---
+    function replaceSlidersWithFake(container) {
+      // Заменяем все input[type=range] на кастомные div
+      const ranges = container.querySelectorAll('input[type="range"]');
+      ranges.forEach(input => {
+        const value = input.value;
+        const min = input.min;
+        const max = input.max;
+        const width = input.offsetWidth || 120;
+        // Создаем фейковый ползунок
+        const fake = document.createElement('div');
+        fake.className = 'fake-slider';
+        fake.style.width = width + 'px';
+        // Полоса заполнения
+        const percent = ((value - min) / (max - min)) * 100;
+        const fill = document.createElement('div');
+        fill.className = 'fake-slider-fill';
+        fill.style.width = percent + '%';
+        fill.style.background = input.style.backgroundColor || '#3b82f6';
+        fake.appendChild(fill);
+        // Кружок
+        const knob = document.createElement('div');
+        knob.className = 'fake-slider-knob';
+        knob.style.left = `calc(${percent}% - 9px)`;
+        knob.style.borderColor = input.style.backgroundColor || '#3b82f6';
+        fake.appendChild(knob);
+        // Значение (скрыто)
+        const val = document.createElement('span');
+        val.className = 'fake-slider-value';
+        val.textContent = value;
+        fake.appendChild(val);
+
+        // Сохраняем ссылку на оригинальный input
+        fake.dataset.originalInput = input.outerHTML;
+        input.parentNode.replaceChild(fake, input);
+      });
+    }
+
+    function removeEmptyPdfPages(container) {
+      // Удаляем пустые pdf-page-break (без содержимого или только с пробелами)
+      const pages = container.querySelectorAll('.pdf-page-break');
+      pages.forEach(page => {
+        // Если внутри только пустые текстовые узлы или ничего
+        if (!page.textContent.trim() && page.children.length === 0) {
+          page.parentNode.removeChild(page);
+        }
+        // Если внутри только пустые div или br
+        else if (
+          page.children.length === 1 &&
+          (page.children[0].tagName === 'BR' ||
+           (page.children[0].tagName === 'DIV' && !page.children[0].textContent.trim()))
+        ) {
+          page.parentNode.removeChild(page);
+        }
+      });
+    }
+
+    function restoreSliders(container) {
+      // Восстанавливаем input[type=range] из data-original-input
+      const fakes = container.querySelectorAll('.fake-slider');
+      fakes.forEach(fake => {
+        const temp = document.createElement('div');
+        temp.innerHTML = fake.dataset.originalInput;
+        const input = temp.firstChild;
+        fake.parentNode.replaceChild(input, fake);
+      });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+      // Клонируем все нужные страницы по порядку
+      const tempDiv = document.createElement('div');
+      tempDiv.style.background = "#fff";
+      tempDiv.style.display = "flex";
+      tempDiv.style.flexDirection = "column";
+      tempDiv.style.alignItems = "center";
+      tempDiv.style.justifyContent = "center";
+      tempDiv.style.margin = "0 auto";
+      tempDiv.style.width = "1000px";
+      tempDiv.style.maxWidth = "100%";
+
+      // Колесо баланса
+      tempDiv.appendChild(document.getElementById('balanceWheelPage').cloneNode(true));
+      // Все блоки аудита (каждый на своей странице)
+      document.querySelectorAll('#blocksSection .pdf-page-break').forEach(block => {
+        tempDiv.appendChild(block.cloneNode(true));
+      });
+      // Имя и таблица
+      tempDiv.appendChild(document.getElementById('comparePage').cloneNode(true));
+
+      // Добавляем класс для скрытия цифр сверху ползунков и для отступа блоков аудита
+      tempDiv.classList.add('pdf-export');
+
+      // Заменяем все input[type=range] на фейковые ползунки
+      replaceSlidersWithFake(tempDiv);
+
+      // Удаляем пустые страницы
+      removeEmptyPdfPages(tempDiv);
+
+      const opt = {
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     'audit-sebya.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+        pagebreak:    { mode: ['css', 'legacy'] }
+      };
+
+      html2pdf().set(opt).from(tempDiv).toPdf().get('pdf').then(function(pdf) {
+        // Удаляем страницы 1 и 3 (нумерация с 1)
+        // В jsPDF страницы нумеруются с 1, но массив с 0
+        // Удалять нужно сначала 3, потом 1, чтобы индексы не сместились
+        const total = pdf.internal.getNumberOfPages();
+        if (total >= 3) {
+          pdf.deletePage(3);
+          pdf.deletePage(1);
+        } else if (total >= 1) {
+          pdf.deletePage(1);
+        }
+      }).save('audit-sebya.pdf').then(() => {
+        document.body.removeChild(tempDiv);
+      });
+
+      document.body.appendChild(tempDiv);
+    });
+  </script>
+</body>
+</html>
